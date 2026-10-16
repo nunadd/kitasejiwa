@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitaSejiwa | Pre-Marital Compatibility Assessment</title>
+    <!-- Tailwind CSS & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="bg-rose-50/50 text-slate-800 min-h-screen flex flex-col">
+
+<!-- Top Navigation & Language Toggle -->
+    <header class="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="app.router('welcome')">
+                <!-- LOGO IMAJ Khas Anda -->
+                <img src="logo.jpeg" alt="KitaSejiwa Logo" class="w-10 h-10 rounded-full shadow-md object-cover border border-rose-200">
+                
+                <div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">KitaSejiwa</span>
+                    <span class="block text-xs text-slate-400" data-translate="appSubtitle">Pre-Marital Alignment & Compatibility</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="app.toggleLanguage()" class="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 text-sm font-medium hover:bg-rose-100 transition">
+                    <i data-lucide="globe" class="w-4 h-4"></i>
+                    <span id="langLabel">BM / EN</span>
+                </button>
+                <div id="authNavBadge" class="hidden text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 my-4">
+        <div id="appContainer" class="bg-white rounded-2xl shadow-xl border border-rose-100 overflow-hidden">
+            <!-- Dynamic Views Loaded Here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-400 no-print">
+        <p>KitaSejiwa © 2026 • Built for meaningful couple alignment & discussions.</p>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // --- MULTILINGUAL DICTIONARY ---
+        const t = {
+            ms: {
+                appSubtitle: "Keserasian & Persediaan Pra-Perkahwinan",
+                welcomeTitle: "Kenali Hati Budi & Halatuju Bersama",
+                welcomeDesc: "Ujian keserasian berasaskan 157 soalan mendalam (D01-D10) untuk membantu anda dan pasangan berbincang sebelum melangkah ke alam perkahwinan.",
+                startBtn: "Mula Sekarang",
+                sessionNameLabel: "Nama Anda / Your Name",
+                partnerNameLabel: "Nama Pasangan / Partner's Name",
+                selectAvatar: "Pilih Avatar Anda",
+                createSession: "Buka Sesi Baru (Couple Session)",
+                joinSession: "Sertai Sesi Pasangan",
+                sessionCodePlaceholder: "Masukkan Kod Sesi (Cth: KS-8892)",
+                next: "Seterusnya",
+                prev: "Sebelumnya",
+                submit: "Hantar Jawapan",
+                question: "Soalan",
+                category: "Kategori",
+                importantBadge: "Soalan Kritikal ⚠️",
+                compatibilityScore: "Peratusan Keserasian",
+                discussionNeeded: "Topik Perbincangan Lanjut",
+                aiConclusion: "Analisis & Cadangan AI",
+                printReport: "Cetak / Simpan PDF",
+                emailReport: "Hantar Keputusan ke Emel",
+                emailPlaceholder: "Masukkan alamat emel...",
+                send: "Hantar",
+                estimatedTime: "Masa dianggarkan: 25 - 35 minit."
+            },
+            en: {
+                appSubtitle: "Pre-Marital Alignment & Compatibility",
+                welcomeTitle: "Understand Each Other Before Marriage",
+                welcomeDesc: "A comprehensive compatibility assessment based on 157 in-depth questions (D01-D10) to guide meaningful pre-marital conversations.",
+                startBtn: "Get Started",
+                sessionNameLabel: "Your Name",
+                partnerNameLabel: "Partner's Name",
+                selectAvatar: "Choose Your Avatar",
+                createSession: "Create New Couple Session",
+                joinSession: "Join Partner's Session",
+                sessionCodePlaceholder: "Enter Session Code (e.g., KS-8892)",
+                next: "Next",
+                prev: "Previous",
+                submit: "Submit Answers",
+                question: "Question",
+                category: "Category",
+                importantBadge: "Critical Question ⚠️",
+                compatibilityScore: "Compatibility Score",
+                discussionNeeded: "Topics Requiring Discussion",
+                aiConclusion: "AI Analysis & Guidance",
+                printReport: "Print / Save PDF",
+                emailReport: "Email Results",
+                emailPlaceholder: "Enter email address...",
+                send: "Send",
+                estimatedTime: "Estimated time: 25 - 35 minutes."
+            }
+        };
+
+        // --- MOCK / FULL QUESTION BANK (D01 to D10 Summary & Sample from Master Data) ---
+        const MASTER_QUESTIONS = [
+            { id: "D01-001", cat: "Values & Personality", text_ms: "Apakah perkara yang paling penting dalam sebuah hubungan?", text_en: "What is most important in a relationship?", type: "MCQ", important: true, options: ["Trust & honesty", "Communication", "Stability", "Love & emotional connection"], prompt: "Mengapa dua perkara ini paling penting bagi anda?" },
+            { id: "D01-002", cat: "Values & Personality", text_ms: "Saya lebih selesa dengan pasangan yang...", text_en: "I am more comfortable with a partner who...", type: "MCQ", important: false, options: ["Sama seperti saya", "Mempunyai personaliti berbeza", "Seimbang dengan personaliti saya", "Tidak kisah asalkan saling memahami"], prompt: "Sejauh mana perbezaan personaliti penting dalam rumah tangga?" },
+            { id: "D02-001", cat: "Emotional Support", text_ms: "Dalam hubungan, saya lebih menghargai…", text_en: "In a relationship, I value most…", type: "MCQ", important: false, options: ["Quality time", "Words of affirmation", "Acts of service", "Physical presence/support"], prompt: "Bincangkan bahasa kasih sayang (love languages) masing-masing." },
+            { id: "D03-001", cat: "Communication & Conflict", text_ms: "Bila membuat keputusan besar, saya biasanya...", text_en: "When making big decisions, I usually...", type: "MCQ", important: false, options: ["Fikir sendiri dahulu", "Terus bincang dengan pasangan", "Tanya orang berpengalaman", "Gabungkan semua pandangan"], prompt: "Bilakah keputusan perlu dibuat sendiri dan bilakah pasangan perlu dilibatkan?" },
+            { id: "D03-003", cat: "Communication & Conflict", text_ms: "Jika kamu dan pasangan tidak bersetuju tentang perkara besar, apakah proses yang kamu mahu gunakan?", text_en: "If you and your partner disagree on a big matter, what process do you prefer?", type: "MCQ", important: true, options: ["Seorang membuat keputusan", "Kompromi / Undi", "Berbincang sehingga memahami perspektif", "Rujukan pihak ketiga yang dipercayai"], prompt: "Apakah definisi keputusan besar bagi anda berdua?" },
+            { id: "D04-001", cat: "Money & Career", text_ms: "Dalam kehidupan, saya paling mengutamakan…", text_en: "In life, I prioritize most...", type: "MCQ", important: false, options: ["Family", "Career", "Financial stability", "Personal growth"], prompt: "Bagaimana kerjaya dan keluarga akan diimbangi?" },
+            { id: "D04-002", cat: "Money & Career", text_ms: "Perbelanjaan besar sepatutnya…", text_en: "Major expenses should be...", type: "MCQ", important: true, options: ["Wajib bincang dahulu", "Boleh buat sendiri jika guna duit sendiri", "Bergantung kepada jumlah", "Bergantung kepada jenis pembelian"], prompt: "Bincangkan had perbelanjaan yang memerlukan persetujuan bersama." },
+            { id: "D06-002", cat: "Nafkah & Finance", text_ms: "Saya selesa pasangan mengetahui keadaan kewangan saya secara terbuka.", text_en: "I am comfortable with my partner knowing my financial status openly.", type: "SCALE", important: true, options: ["1 = Sangat tidak setuju", "2 = Tidak setuju", "3 = Neutral", "4 = Setuju", "5 = Sangat setuju"], prompt: "Sejauh mana ketelusan kewangan diamalkan sebelum dan selepas berkahwin?" },
+            { id: "D07-001", cat: "Family & Boundaries", text_ms: "Jika keluarga dan pasangan mempunyai pendapat berbeza, saya akan…", text_en: "If family and partner have differing opinions, I will...", type: "MCQ", important: true, options: ["Utamakan pasangan", "Cuba cari jalan tengah", "Dengar kedua-duanya dahulu", "Bergantung kepada isu"], prompt: "Bagaimana menetapkan sempadan sihat dengan keluarga kedua-belah pihak?" },
+            { id: "D09-001", cat: "Health & Housework", text_ms: "Pada pandangan awak, siapakah yang bertanggungjawab mengurus kerja rumah selepas berkahwin?", text_en: "Who is responsible for managing housework after marriage?", type: "MCQ", important: true, options: ["Isteri tanggungjawab utama, suami bantu", "Kedua-duanya berkongsi mengikut masa", "Mengikut status bekerja / suri rumah", "Dipersetujui bersama mengikut rutin"], prompt: "Bincangkan pembahagian tugas harian secara realistik." }
+        ];
+
+        // --- APP STATE ---
+        const avatars = ['🦊', '🐼', '🐨', '🦁', '🐰', '🐯', '🐱', '🐶'];
+        let state = {
+            lang: 'ms',
+            view: 'welcome', // welcome, setup, quiz, results, admin
+            userName: '',
+            partnerName: '',
+            userAvatar: '🦊',
+            sessionCode: '',
+            currentQIndex: 0,
+            answers: {},
+            partnerAnswers: { // Simulated partner answers for standalone demo
+                'D01-001': 0, 'D01-002': 1, 'D02-001': 0, 'D03-001': 1, 'D03-003': 2,
+                'D04-001': 2, 'D04-002': 0, 'D06-002': 4, 'D07-001': 2, 'D09-001': 1
+            }
+        };
+
+        // --- ROUTER & RENDER ENGINE ---
+        const app = {
+            router(viewName) {
+                state.view = viewName;
+                this.render();
+                window.scrollTo(0, 0);
+            },
+            toggleLanguage() {
+                state.lang = state.lang === 'ms' ? 'en' : 'ms';
+                document.getElementById('langLabel').innerText = state.lang.toUpperCase();
+                this.render();
+            },
+            render() {
+                const container = document.getElementById('appContainer');
+                if (state.view === 'welcome') container.innerHTML = this.renderWelcome();
+                else if (state.view === 'setup') container.innerHTML = this.renderSetup();
+                else if (state.view === 'quiz') container.innerHTML = this.renderQuiz();
+                else if (state.view === 'results') container.innerHTML = this.renderResults();
+                else if (state.view === 'admin') container.innerHTML = this.renderAdmin();
+                lucide.createIcons();
+            },
+
+            renderWelcome() {
+                const lang = t[state.lang];
+                return `
+                    <div class="p-8 sm:p-12 text-center space-y-6">
+                        <div class="inline-flex p-4 bg-rose-100 text-rose-600 rounded-full shadow-inner mb-2">
+                            <i data-lucide="heart-handshake" class="w-12 h-12"></i>
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl font-extxl font-bold text-slate-900">${lang.welcomeTitle}</h1>
+                        <p class="text-slate-600 max-w-xl mx-auto text-base leading-relaxed">${lang.welcomeDesc}</p>
+                        <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 max-w-md mx-auto text-xs text-rose-700 flex items-center justify-center space-x-2">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>${lang.estimatedTime}</span>
+                        </div>
+                        <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+                            <button onclick="app.router('setup')" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:from-rose-700 hover:to-pink-700 transition flex items-center justify-center space-x-2">
+                                <span>${lang.startBtn}</span>
+                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="app.router('admin')" class="px-6 py-3.5 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-center space-x-2">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                                <span>Admin Dashboard</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderSetup() {
+                const lang = t[state.lang];
+                return `
+                    <div class="p-6 sm:p-10 space-y-6">
+                        <div class="border-b pb-4">
+                            <h2 class="text-2xl font-bold text-slate-900">Setup Your Session</h2>
+                            <p class="text-sm text-slate-500">Enter your details and pick your avatar before starting.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.sessionNameLabel}</label>
+                                <input type="text" id="inputUserName" value="${state.userName}" placeholder="e.g. Adam" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.partnerNameLabel}</label>
+                                <input type="text" id="inputPartnerName" value="${state.partnerName}" placeholder="e.g. Hawa" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-3">${lang.selectAvatar}</label>
+                            <div class="flex flex-wrap gap-3">
+                                ${avatars.map(av => `
+                                    <button onclick="app.setAvatar('${av}')" class="w-12 h-12 text-2xl rounded-2xl border-2 flex items-center justify-center transition ${state.userAvatar === av ? 'border-rose-600 bg-rose-50 scale-105 shadow-md' : 'border-slate-200 hover:bg-slate-50'}">
+                                        ${av}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="pt-6 flex justify-between items-center border-t">
+                            <button onclick="app.router('welcome')" class="text-slate-500 hover:text-slate-800 font-medium text-sm">Back</button>
+                            <button onclick="app.startQuiz()" class="px-8 py-3 bg-rose-600 text-white font-semibold rounded-xl shadow hover:bg-rose-700 transition">Start Assessment</button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            setAvatar(av) {
+                state.userAvatar = av;
+                this.render();
+            },
+
+            startQuiz() {
+                const uName = document.getElementById('inputUserName').value.trim();
+                const pName = document.getElementById('inputPartnerName').value.trim();
+                if (!uName || !pName) {
+                    alert("Please enter both your name and your partner's name.");
+                    return;
+                }
+                state.userName = uName;
+                state.partnerName = pName;
+                state.sessionCode = 'KS-' + Math.floor(1000 + Math.random() * 9000);
+                state.currentQIndex = 0;
+                this.router('quiz');
+            },
+
+            renderQuiz() {
+                const lang = t[state.lang];
+                const q = MASTER_QUESTIONS[state.currentQIndex];
+                const total = MASTER_QUESTIONS.length;
+                const progress = ((state.currentQIndex + 1) / total) * 100;
+                const qText = state.lang === 'ms' ? q.text_ms : q.text_en;
+                const currentAnswer = state.answers[q.id];
+
+                return `
+                    <div class="p-6 sm:p-10 space-y-6">
+                        <div class="flex justify-between items-center text-sm font-medium text-slate-500">
+                            <span>${state.userAvatar} ${state.userName} & ${state.partnerName}</span>
+                            <span>Session: <strong class="text-rose-600">${state.sessionCode}</strong></span>
+                        </div>
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-rose-500 h-full transition-all duration-300" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>${lang.question} ${state.currentQIndex + 1} of ${total}</span>
+                            <span>${q.cat}</span>
+                        </div>
+
+                        <!-- Question Box -->
+                        <div class="space-y-4 pt-2">
+                            ${q.important ? `<span class="inline-block px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">${lang.importantBadge}</span>` : ''}
+                            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">${qText}</h3>
+
+                            <div class="space-y-3 pt-3">
+                                ${q.options.map((opt, idx) => `
+                                    <label class="flex items-center p-4 rounded-xl border-2 cursor-pointer transition ${currentAnswer === idx ? 'border-rose-500 bg-rose-50/60 shadow-sm' : 'border-slate-200 hover:border-slate-300 bg-white'}">
+                                        <input type="radio" name="qoption" value="${idx}" ${currentAnswer === idx ? 'checked' : ''} onchange="app.saveAnswer('${q.id}',${idx})" class="w-4 h-4 text-rose-600 focus:ring-rose-500">
+                                        <span class="ml-3 text-slate-700 font-medium">${opt}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Navigation -->
+                        <div class="pt-6 flex justify-between items-center border-t">
+                            <button onclick="app.prevQuestion()" ${state.currentQIndex === 0 ? 'disabled class="opacity-50 cursor-not-allowed px-5 py-2.5 rounded-xl border text-slate-400"' : 'class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50"'}>${lang.prev}</button>
+                            ${state.currentQIndex < total - 1 ? 
+                                `<button onclick="app.nextQuestion()" class="px-6 py-2.5 bg-rose-600 text-white font-semibold rounded-xl hover:bg-rose-700 shadow">${lang.next}</button>` :
+                                `<button onclick="app.finishQuiz()" class="px-6 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 shadow">${lang.submit}</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            },
+
+            saveAnswer(qId, idx) {
+                state.answers[qId] = idx;
+            },
+            nextQuestion() {
+                if (state.answers[MASTER_QUESTIONS[state.currentQIndex].id] === undefined) {
+                    alert("Please select an answer before proceeding.");
+                    return;
+                }
+                state.currentQIndex++;
+                this.render();
+            },
+            prevQuestion() {
+                if (state.currentQIndex > 0) {
+                    state.currentQIndex--;
+                    this.render();
+                }
+            },
+            finishQuiz() {
+                this.router('results');
+            },
+
+            renderResults() {
+                const lang = t[state.lang];
+                // Compute compatibility score
+                let matches = 0;
+                let totalQ = MASTER_QUESTIONS.length;
+                let diffs = [];
+
+                MASTER_QUESTIONS.forEach(q => {
+                    const uAns = state.answers[q.id];
+                    const pAns = state.partnerAnswers[q.id] !== undefined ? state.partnerAnswers[q.id] : 0;
+                    if (uAns === pAns) {
+                        matches++;
+                    } else {
+                        diffs.push({ q, uAns, pAns });
+                    }
+                });
+
+                const score = Math.round((matches / totalQ) * 100);
+
+                return `
+                    <div class="p-6 sm:p-10 space-y-8">
+                        <div class="text-center space-y-3 no-print">
+                            <div class="inline-flex p-3 bg-emerald-100 text-emerald-600 rounded-full">
+                                <i data-lucide="award" class="w-10 h-10"></i>
+                            </div>
+                            <h2 class="text-3xl font-bold text-slate-900">${state.userName} & ${state.partnerName} Compatibility</h2>
+                            <p class="text-slate-500">Here is how well your answers aligned across all core categories.</p>
+                        </div>
+
+                        <!-- Score Card -->
+                        <div class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 text-white text-center shadow-lg">
+                            <span class="text-xs uppercase tracking-widest font-semibold opacity-90">${lang.compatibilityScore}</span>
+                            <div class="text-6xl font-extrabold my-2">${score}%</div>
+                            <p class="text-sm opacity-95 max-w-md mx-auto">
+                                ${score >= 80 ? "🌟 High Alignment! You share strong core values with great foundation for marriage." : score >= 50 ? "💡 Good Balance! Some differences to discuss and align before marriage." : "⚠️ Important Discussions Needed on several foundational values."}
+                            </s>
+                        </div>
+
+                        <!-- AI Guidance & Differing Topics -->
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-rose-600"></i>
+                                <span>${lang.discussionNeeded} (${diffs.length} topics)</span>
+                            </h3>
+                            <div class="space-y-3">
+                                ${diffs.map(d => `
+                                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                                        <div class="flex justify-between items-start">
+                                            <span class="text-xs font-bold text-rose-600 uppercase">${d.q.cat}</span>${d.q.important ? '<span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold">Critical Topic</span>' : ''}
+                                        </div>
+                                        <h4 class="font-semibold text-slate-900">${state.lang === 'ms' ? d.q.text_ms : d.q.text_en}</h4>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                                            <div class="p-2 bg-white rounded border border-slate-200">
+                                                <strong>${state.userName}:</strong>${d.q.options[d.uAns] ?? 'N/A'}
+                                            </div>
+                                            <div class="p-2 bg-white rounded border border-slate-200">
+                                                <strong>${state.partnerName}:</strong>${d.q.options[d.pAns] ?? 'N/A'}
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-rose-700 bg-rose-50 p-2.5 rounded-lg border border-rose-100 mt-2">
+                                            💡 <strong>Discussion Prompt:</strong> ${d.q.prompt}
+                                        </p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Actions / Print / Email -->
+                        <div class="pt-6 border-t flex flex-col sm:flex-row justify-between items-center gap-4 no-print">
+                            <button onclick="window.print()" class="px-6 py-3 bg-slate-800 text-white font-semibold rounded-xl hover:bg-slate-900 transition flex items-center space-x-2">
+                                <i data-lucide="printer" class="w-4 h-4"></i>
+                                <span>${lang.printReport}</span>
+                            </button>
+                            <div class="flex w-full sm:w-auto space-x-2">
+                                <input type="email" id="resultEmail" placeholder="${lang.emailPlaceholder}" class="px-4 py-2.5 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-500 flex-grow">
+                                <button onclick="alert('Report successfully queued for email delivery!')" class="px-5 py-2.5 bg-rose-600 text-white font-semibold rounded-xl text-sm hover:bg-rose-700 whitespace-nowrap">${lang.send}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderAdmin() {
+                return `
+                    <div class="p-6 sm:p-10 space-y-6">
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-900">Admin Dashboard</h2>
+                                <p class="text-sm text-slate-500">Manage questions, master bank (D01-D10), and view user sessions.</p>
+                            </div>
+                            <button onclick="app.router('welcome')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200">Back to App</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="p-5 bg-rose-50 rounded-2xl border border-rose-100">
+                                <span class="text-xs text-rose-600 font-bold uppercase">Total Questions</span>
+                                <div class="text-3xl font-extrabold text-slate-900 mt-1">157</div>
+                            </div>
+                            <div class="p-5 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                <span class="text-xs text-indigo-600 font-bold uppercase">Categories</span>
+                                <div class="text-3xl font-extrabold text-slate-900 mt-1">10 (D01-D10)</div>
+                            </div>
+                            <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+                                <span class="text-xs text-emerald-600 font-bold uppercase">Active Sessions</span>
+                                <div class="text-3xl font-extrabold text-slate-900 mt-1">12</div>
+                            </div>
+                        </div>
+                        <div class="space-y-3 pt-4">
+                            <h3 class="font-bold text-slate-900">Master Question Bank Overview</h3>
+                            <div class="border rounded-xl overflow-hidden text-sm">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="bg-slate-50 border-b text-slate-600">
+                                        <tr>
+                                            <th class="p-3">ID</th>
+                                            <th class="p-3">Category</th>
+                                            <th class="p-3">Question Text</th>
+                                            <th class="p-3">Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y text-slate-700">
+                                        ${MASTER_QUESTIONS.map(q => `
+                                            <tr>
+                                                <td class="p-3 font-semibold text-rose-600">${q.id}</td>
+                                                <td class="p-3">${q.cat}</td>
+                                                <td class="p-3">${q.text_ms}</td>
+                                                <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 rounded text-xs">${q.type}</span></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // Initialize App
+        app.render();
+    </script>
+</body>
+</html>
