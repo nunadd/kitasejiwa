@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KitaSejiwa | Ujian Keserasian Pra-Perkahwinan</title>
+    <title>KitaSejiwa | Pre-Marital Compatibility Assessment</title>
     <!-- Tailwind CSS & Lucide Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,7 +24,10 @@
     <header class="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm no-print">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="app.router('welcome')">
-                <img src="logo.png" alt="KitaSejiwa Logo" class="w-10 h-10 rounded-full shadow-md object-cover border border-rose-200">
+                <!-- LOGO ICON (Menggunakan Ikon Hati & Cincin Cantik Tanpa Bergantung Pada Fail Imej Extra) -->
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-md">
+                    <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                </div>
                 <div>
                     <span class="text-xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">KitaSejiwa</span>
                     <span class="block text-xs text-slate-400" data-translate="appSubtitle">Pre-Marital Alignment & Compatibility</span>
@@ -57,10 +60,10 @@
         const SUPABASE_URL = "https://wfxkkpqwrvxpvwncvpun.supabase.co/rest/v1/";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmeGtrcHF3cnZ4cHZ3bmN2cHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5MDAsImV4cCI6MjEwNzcwMjkwMH0.KRcu36ksV-nj2a1eu8UR6n7-76SVHgVjrjpd17OwvX0";
 
-        // Inisialisasi Klien Supabase (Menggunakan Nama Pembolehubah Yang Betul)
+        // Inisialisasi Klien Supabase (Guna nama pembolehubah sbClient untuk elak bentrok)
         let sbClient = null;
-        if (typeof supabase !== 'undefined' && SUPABASE_URL !== "MASUKKAN_PROJECT_URL_ANDA_DI_SINI") {
-            sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (SUPABASE_URL !== "https://wfxkkpqwrvxpvwncvpun.supabase.co/rest/v1/" && window.supabase) {
+            sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
         // --- MULTILINGUAL DICTIONARY ---
@@ -70,8 +73,8 @@
                 welcomeTitle: "Kenali Hati Budi & Halatuju Bersama",
                 welcomeDesc: "Ujian keserasian berasaskan 157 soalan mendalam (D01-D10) untuk membantu anda dan pasangan berbincang sebelum melangkah ke alam perkahwinan.",
                 startBtn: "Mula Sekarang",
-                sessionNameLabel: "Nama Anda / Your Name",
-                partnerNameLabel: "Nama Pasangan / Partner's Name",
+                sessionNameLabel: "Nama Anda",
+                partnerNameLabel: "Nama Pasangan",
                 selectAvatar: "Pilih Avatar Anda",
                 next: "Seterusnya",
                 prev: "Sebelumnya",
@@ -105,7 +108,6 @@
             }
         };
 
-        // --- MASTER QUESTIONS (D01 - D10) ---
         const MASTER_QUESTIONS = [
             { id: "D01-001", cat: "Values & Personality", text_ms: "Apakah perkara yang paling penting dalam sebuah hubungan?", text_en: "What is most important in a relationship?", type: "MCQ", important: true, options: ["Trust & honesty", "Communication", "Stability", "Love & emotional connection"], prompt: "Mengapa dua perkara ini paling penting bagi anda?" },
             { id: "D01-002", cat: "Values & Personality", text_ms: "Saya lebih selesa dengan pasangan yang...", text_en: "I am more comfortable with a partner who...", type: "MCQ", important: false, options: ["Sama seperti saya", "Mempunyai personaliti berbeza", "Seimbang dengan personaliti saya", "Tidak kisah asalkan saling memahami"], prompt: "Sejauh mana perbezaan personaliti penting dalam rumah tangga?" },
@@ -119,7 +121,6 @@
             { id: "D09-001", cat: "Health & Housework", text_ms: "Pada pandangan awak, siapakah yang bertanggungjawab mengurus kerja rumah selepas berkahwin?", text_en: "Who is responsible for managing housework after marriage?", type: "MCQ", important: true, options: ["Isteri tanggungjawab utama, suami bantu", "Kedua-duanya berkongsi mengikut masa", "Mengikut status bekerja / suri rumah", "Dipersetujui bersama mengikut rutin"], prompt: "Bincangkan pembahagian tugas harian secara realistik." }
         ];
 
-        // --- APP STATE ---
         const avatars = ['🦊', '🐼', '🐨', '🦁', '🐰', '🐯', '🐱', '🐶'];
         let state = {
             lang: 'ms',
@@ -136,7 +137,6 @@
             }
         };
 
-        // --- ROUTER & RENDER ENGINE ---
         const app = {
             router(viewName) {
                 state.view = viewName;
@@ -145,4 +145,233 @@
             },
             toggleLanguage() {
                 state.lang = state.lang === 'ms' ? 'en' : 'ms';
-                document.getElementById('langLabel').innerText
+                document.getElementById('langLabel').innerText = state.lang.toUpperCase();
+                this.render();
+            },
+            render() {
+                const container = document.getElementById('appContainer');
+                if (!container) return;
+                if (state.view === 'welcome') container.innerHTML = this.renderWelcome();
+                else if (state.view === 'setup') container.innerHTML = this.renderSetup();
+                else if (state.view === 'quiz') container.innerHTML = this.renderQuiz();
+                else if (state.view === 'results') container.innerHTML = this.renderResults();
+                else if (state.view === 'admin') container.innerHTML = this.renderAdmin();
+                if (window.lucide) lucide.createIcons();
+            },
+
+            renderWelcome() {
+                const lang = t[state.lang];
+                return `
+                    <div class="p-8 sm:p-12 text-center space-y-6">
+                        <div class="inline-flex p-4 bg-rose-100 text-rose-600 rounded-full shadow-inner mb-2">
+                            <i data-lucide="heart-handshake" class="w-12 h-12"></i>
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900">${lang.welcomeTitle}</h1>
+                        <p class="text-slate-600 max-w-xl mx-auto text-base leading-relaxed">${lang.welcomeDesc}</p>
+                        <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 max-w-md mx-auto text-xs text-rose-700 flex items-center justify-center space-x-2">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>${lang.estimatedTime}</span>
+                        </div>
+                        <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+                            <button onclick="app.router('setup')" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:from-rose-700 hover:to-pink-700 transition flex items-center justify-center space-x-2">
+                                <span>${lang.startBtn}</span>
+                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderSetup() {
+                const lang = t[state.lang];
+                return `
+                    <div class="p-6 sm:p-10 space-y-6">
+                        <div class="border-b pb-4">
+                            <h2 class="text-2xl font-bold text-slate-900">Setup Session</h2>
+                            <p class="text-sm text-slate-500">Masukkan nama dan pilih avatar sebelum bermula.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.sessionNameLabel}</label>
+                                <input type="text" id="inputUserName" value="${state.userName}" placeholder="Contoh: Adam" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.partnerNameLabel}</label>
+                                <input type="text" id="inputPartnerName" value="${state.partnerName}" placeholder="Contoh: Hawa" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-3">${lang.selectAvatar}</label>
+                            <div class="flex flex-wrap gap-3">
+                                ${avatars.map(av => `
+                                    <button onclick="app.setAvatar('${av}')" class="w-12 h-12 text-2xl rounded-2xl border-2 flex items-center justify-center transition ${state.userAvatar === av ? 'border-rose-600 bg-rose-50 scale-105 shadow-md' : 'border-slate-200 hover:bg-slate-50'}">
+                                        ${av}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="pt-6 flex justify-between items-center border-t">
+                            <button onclick="app.router('welcome')" class="text-slate-500 hover:text-slate-800 font-medium text-sm">Kembali</button>
+                            <button onclick="app.startQuiz()" class="px-8 py-3 bg-rose-600 text-white font-semibold rounded-xl shadow hover:bg-rose-700 transition">Mula Ujian</button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            setAvatar(av) {
+                state.userAvatar = av;
+                this.render();
+            },
+
+            startQuiz() {
+                const uName = document.getElementById('inputUserName').value.trim();
+                const pName = document.getElementById('inputPartnerName').value.trim();
+                if (!uName || !pName) {
+                    alert("Sila masukkan nama anda dan nama pasangan.");
+                    return;
+                }
+                state.userName = uName;
+                state.partnerName = pName;
+                state.sessionCode = 'KS-' + Math.floor(1000 + Math.random() * 9000);
+                state.currentQIndex = 0;
+                this.router('quiz');
+            },
+
+            renderQuiz() {
+                const lang = t[state.lang];
+                const q = MASTER_QUESTIONS[state.currentQIndex];
+                const total = MASTER_QUESTIONS.length;
+                const progress = ((state.currentQIndex + 1) / total) * 100;
+                const qText = state.lang === 'ms' ? q.text_ms : q.text_en;
+                const currentAnswer = state.answers[q.id];
+
+                return `
+                    <div class="p-6 sm:p-10 space-y-6">
+                        <div class="flex justify-between items-center text-sm font-medium text-slate-500">
+                            <span>${state.userAvatar} ${state.userName} & ${state.partnerName}</span>
+                            <span>Sesi: <strong class="text-rose-600">${state.sessionCode}</strong></span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-rose-500 h-full transition-all duration-300" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>${lang.question} ${state.currentQIndex + 1} daripada ${total}</span>
+                            <span>${q.cat}</span>
+                        </div>
+
+                        <div class="space-y-4 pt-2">
+                            ${q.important ? `<span class="inline-block px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">${lang.importantBadge}</span>` : ''}
+                            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">${qText}</h3>
+
+                            <div class="space-y-3 pt-3">
+                                ${q.options.map((opt, idx) => `
+                                    <label class="flex items-center p-4 rounded-xl border-2 cursor-pointer transition ${currentAnswer === idx ? 'border-rose-500 bg-rose-50/60 shadow-sm' : 'border-slate-200 hover:border-slate-300 bg-white'}">
+                                        <input type="radio" name="qoption" value="${idx}" ${currentAnswer === idx ? 'checked' : ''} onchange="app.saveAnswer('${q.id}',${idx})" class="w-4 h-4 text-rose-600 focus:ring-rose-500">
+                                        <span class="ml-3 text-slate-700 font-medium">${opt}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="pt-6 flex justify-between items-center border-t">
+                            <button onclick="app.prevQuestion()" ${state.currentQIndex === 0 ? 'disabled class="opacity-50 cursor-not-allowed px-5 py-2.5 rounded-xl border text-slate-400"' : 'class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50"'}>${lang.prev}</button>
+                            ${state.currentQIndex < total - 1 ? 
+                                `<button onclick="app.nextQuestion()" class="px-6 py-2.5 bg-rose-600 text-white font-semibold rounded-xl hover:bg-rose-700 shadow">${lang.next}</button>` :
+                                `<button onclick="app.finishQuiz()" class="px-6 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 shadow">${lang.submit}</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            },
+
+            saveAnswer(qId, idx) {
+                state.answers[qId] = idx;
+            },
+            nextQuestion() {
+                if (state.answers[MASTER_QUESTIONS[state.currentQIndex].id] === undefined) {
+                    alert("Sila pilih satu jawapan sebelum meneruskan.");
+                    return;
+                }
+                state.currentQIndex++;
+                this.render();
+            },
+            prevQuestion() {
+                if (state.currentQIndex > 0) {
+                    state.currentQIndex--;
+                    this.render();
+                }
+            },
+            finishQuiz() {
+                this.router('results');
+            },
+
+            renderResults() {
+                const lang = t[state.lang];
+                let matches = 0;
+                let totalQ = MASTER_QUESTIONS.length;
+                let diffs = [];
+
+                MASTER_QUESTIONS.forEach(q => {
+                    const uAns = state.answers[q.id];
+                    const pAns = state.partnerAnswers[q.id] !== undefined ? state.partnerAnswers[q.id] : 0;
+                    if (uAns === pAns) {
+                        matches++;
+                    } else {
+                        diffs.push({ q, uAns, pAns });
+                    }
+                });
+
+                const score = Math.round((matches / totalQ) * 100);
+
+                return `
+                    <div class="p-6 sm:p-10 space-y-8">
+                        <div class="text-center space-y-3 no-print">
+                            <div class="inline-flex p-3 bg-emerald-100 text-emerald-600 rounded-full">
+                                <i data-lucide="award" class="w-10 h-10"></i>
+                            </div>
+                            <h2 class="text-3xl font-bold text-slate-900">Keputusan Keserasian: ${state.userName} & ${state.partnerName}</h2>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 text-white text-center shadow-lg">
+                            <span class="text-xs uppercase tracking-widest font-semibold opacity-90">${lang.compatibilityScore}</span>
+                            <div class="text-6xl font-extrabold my-2">${score}%</div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-rose-600"></i>
+                                <span>${lang.discussionNeeded} (${diffs.length} topik)</span>
+                            </h3>
+                            <div class="space-y-3">
+                                ${diffs.map(d => `
+                                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                                        <div class="flex justify-between items-start">
+                                            <span class="text-xs font-bold text-rose-600 uppercase">${d.q.cat}</span>
+                                        </div>
+                                        <h4 class="font-semibold text-slate-900">${state.lang === 'ms' ? d.q.text_ms : d.q.text_en}</h4>
+                                        <p class="text-xs text-rose-700 bg-rose-50 p-2.5 rounded-lg border border-rose-100 mt-2">
+                                            💡 <strong>Cadangan Perbincangan:</strong> ${d.q.prompt}
+                                        </p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t flex justify-between items-center no-print">
+                            <button onclick="window.print()" class="px-6 py-3 bg-slate-800 text-white font-semibold rounded-xl hover:bg-slate-900 transition flex items-center space-x-2">
+                                <i data-lucide="printer" class="w-4 h-4"></i>
+                                <span>${lang.printReport}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // Jalankan Laman Web
+        window.addEventListener('DOMContentLoaded', () => {
+            app.render();
+        });
+    </script>
+</body>
+</html>
