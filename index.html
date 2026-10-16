@@ -57,6 +57,17 @@
 
     <!-- Application Script -->
     <script>
+        // --- SUPABASE CONFIGURATION ---
+        const SUPABASE_URL = "https://wfxkkpqwrvxpvwncvpun.supabase.co/rest/v1/";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmeGtrcHF3cnZ4cHZ3bmN2cHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5MDAsImV4cCI6MjEwNzcwMjkwMH0.KRcu36ksV-nj2a1eu8UR6n7-76SVHgVjrjpd17OwvX0";
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- MULTILINGUAL DICTIONARY ---
+        const t = {
+            ms: {
+                appSubtitle: "Keserasian & Persediaan Pra-Perkahwinan",
+
         // --- MULTILINGUAL DICTIONARY ---
         const t = {
             ms: {
