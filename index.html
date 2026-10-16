@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KitaSejiwa | Pre-Marital Compatibility Assessment</title>
+    <title>KitaSejiwa | Penilaian Keserasian Pasangan</title>
     <!-- Tailwind CSS & Lucide Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,13 +24,12 @@
     <header class="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm no-print">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="app.router('welcome')">
-                <!-- LOGO ICON (Menggunakan Ikon Hati & Cincin Cantik Tanpa Bergantung Pada Fail Imej Extra) -->
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-md">
                     <i data-lucide="heart-handshake" class="w-5 h-5"></i>
                 </div>
                 <div>
                     <span class="text-xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">KitaSejiwa</span>
-                    <span class="block text-xs text-slate-400" data-translate="appSubtitle">Pre-Marital Alignment & Compatibility</span>
+                    <span class="block text-xs text-slate-400">Pre-Marital Alignment & Compatibility</span>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -45,13 +44,13 @@
     <!-- Main Container -->
     <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 my-4">
         <div id="appContainer" class="bg-white rounded-2xl shadow-xl border border-rose-100 overflow-hidden">
-            <!-- Dynamic Views Loaded Here -->
+            <!-- Dynamic Views -->
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="text-center py-6 text-xs text-slate-400 no-print">
-        <p>KitaSejiwa © 2026 • Built for meaningful couple alignment & discussions.</p>
+        <p>KitaSejiwa © 2026 • Penilaian Keserasian Pra-Perkahwinan</p>
     </footer>
 
     <!-- Application Script -->
@@ -60,81 +59,84 @@
         const SUPABASE_URL = "https://wfxkkpqwrvxpvwncvpun.supabase.co/rest/v1/";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmeGtrcHF3cnZ4cHZ3bmN2cHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5MDAsImV4cCI6MjEwNzcwMjkwMH0.KRcu36ksV-nj2a1eu8UR6n7-76SVHgVjrjpd17OwvX0";
 
-        // Inisialisasi Klien Supabase (Guna nama pembolehubah sbClient untuk elak bentrok)
         let sbClient = null;
         if (SUPABASE_URL !== "https://wfxkkpqwrvxpvwncvpun.supabase.co/rest/v1/" && window.supabase) {
             sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // --- MULTILINGUAL DICTIONARY ---
+        // --- DICTIONARY ---
         const t = {
             ms: {
-                appSubtitle: "Keserasian & Persediaan Pra-Perkahwinan",
                 welcomeTitle: "Kenali Hati Budi & Halatuju Bersama",
-                welcomeDesc: "Ujian keserasian berasaskan 157 soalan mendalam (D01-D10) untuk membantu anda dan pasangan berbincang sebelum melangkah ke alam perkahwinan.",
-                startBtn: "Mula Sekarang",
-                sessionNameLabel: "Nama Anda",
-                partnerNameLabel: "Nama Pasangan",
-                selectAvatar: "Pilih Avatar Anda",
+                welcomeDesc: "Ujian keserasian berasaskan soalan mendalam (D01-D10) untuk membantu anda dan pasangan berbincang sebelum melangkah ke alam perkahwinan.",
+                createSessionBtn: "Buka Sesi Baharu (Pasangan Pertama)",
+                joinSessionBtn: "Sertai Sesi Pasangan (Pasangan Kedua)",
+                genderLabel: "Jantina / Peranan Anda",
+                maleOption: "Lelaki / Bakal Suami 👨",
+                femaleOption: "Perempuan / Bakal Isteri 👩",
+                sessionCodeLabel: "Kod Sesi Pasangan",
+                sessionCodePlaceholder: "Contoh: KS-8892",
+                startBtn: "Mula Jawab Soalan",
                 next: "Seterusnya",
                 prev: "Sebelumnya",
                 submit: "Hantar Jawapan",
                 question: "Soalan",
-                importantBadge: "Soalan Kritikal ⚠️",
                 compatibilityScore: "Peratusan Keserasian",
-                discussionNeeded: "Topik Perbincangan Lanjut",
+                discussionNeeded: "Topik Perbincangan Lanjut (Jawapan Berbeza)",
                 printReport: "Cetak / Simpan PDF",
-                send: "Hantar",
-                estimatedTime: "Masa dianggarkan: 25 - 35 minit."
+                estimatedTime: "Anggaran masa: 20 - 30 minit (158 Soalan)."
             },
             en: {
-                appSubtitle: "Pre-Marital Alignment & Compatibility",
                 welcomeTitle: "Understand Each Other Before Marriage",
-                welcomeDesc: "A comprehensive compatibility assessment based on 157 in-depth questions (D01-D10) to guide meaningful pre-marital conversations.",
-                startBtn: "Get Started",
-                sessionNameLabel: "Your Name",
-                partnerNameLabel: "Partner's Name",
-                selectAvatar: "Choose Your Avatar",
+                welcomeDesc: "A compatibility assessment based on deep pre-marital questions (D01-D10) to guide meaningful conversations.",
+                createSessionBtn: "Create New Session (First Partner)",
+                joinSessionBtn: "Join Partner Session (Second Partner)",
+                genderLabel: "Your Gender / Role",
+                maleOption: "Male / Groom-to-be 👨",
+                femaleOption: "Female / Bride-to-be 👩",
+                sessionCodeLabel: "Partner Session Code",
+                sessionCodePlaceholder: "e.g., KS-8892",
+                startBtn: "Start Assessment",
                 next: "Next",
                 prev: "Previous",
                 submit: "Submit Answers",
                 question: "Question",
-                importantBadge: "Critical Question ⚠️",
                 compatibilityScore: "Compatibility Score",
-                discussionNeeded: "Topics Requiring Discussion",
+                discussionNeeded: "Topics Requiring Discussion (Differing Answers)",
                 printReport: "Print / Save PDF",
-                send: "Send",
-                estimatedTime: "Estimated time: 25 - 35 minutes."
+                estimatedTime: "Estimated time: 20 - 30 minutes (158 Questions)."
             }
         };
 
+        // --- MASTER QUESTIONS BANK (Sampel & Struktur Penuh) ---
+        // Sedia dipadankan dengan jadual D01-D10 daripada Master Question Bank
         const MASTER_QUESTIONS = [
-            { id: "D01-001", cat: "Values & Personality", text_ms: "Apakah perkara yang paling penting dalam sebuah hubungan?", text_en: "What is most important in a relationship?", type: "MCQ", important: true, options: ["Trust & honesty", "Communication", "Stability", "Love & emotional connection"], prompt: "Mengapa dua perkara ini paling penting bagi anda?" },
-            { id: "D01-002", cat: "Values & Personality", text_ms: "Saya lebih selesa dengan pasangan yang...", text_en: "I am more comfortable with a partner who...", type: "MCQ", important: false, options: ["Sama seperti saya", "Mempunyai personaliti berbeza", "Seimbang dengan personaliti saya", "Tidak kisah asalkan saling memahami"], prompt: "Sejauh mana perbezaan personaliti penting dalam rumah tangga?" },
-            { id: "D02-001", cat: "Emotional Support", text_ms: "Dalam hubungan, saya lebih menghargai…", text_en: "In a relationship, I value most…", type: "MCQ", important: false, options: ["Quality time", "Words of affirmation", "Acts of service", "Physical presence/support"], prompt: "Bincangkan bahasa kasih sayang (love languages) masing-masing." },
-            { id: "D03-001", cat: "Communication & Conflict", text_ms: "Bila membuat keputusan besar, saya biasanya...", text_en: "When making big decisions, I usually...", type: "MCQ", important: false, options: ["Fikir sendiri dahulu", "Terus bincang dengan pasangan", "Tanya orang berpengalaman", "Gabungkan semua pandangan"], prompt: "Bilakah keputusan perlu dibuat sendiri dan bilakah pasangan perlu dilibatkan?" },
-            { id: "D03-003", cat: "Communication & Conflict", text_ms: "Jika kamu dan pasangan tidak bersetuju tentang perkara besar, apakah proses yang kamu mahu gunakan?", text_en: "If you and your partner disagree on a big matter, what process do you prefer?", type: "MCQ", important: true, options: ["Seorang membuat keputusan", "Kompromi / Undi", "Berbincang sehingga memahami perspektif", "Rujukan pihak ketiga yang dipercayai"], prompt: "Apakah definisi keputusan besar bagi anda berdua?" },
-            { id: "D04-001", cat: "Money & Career", text_ms: "Dalam kehidupan, saya paling mengutamakan…", text_en: "In life, I prioritize most...", type: "MCQ", important: false, options: ["Family", "Career", "Financial stability", "Personal growth"], prompt: "Bagaimana kerjaya dan keluarga akan diimbangi?" },
-            { id: "D04-002", cat: "Money & Career", text_ms: "Perbelanjaan besar sepatutnya…", text_en: "Major expenses should be...", type: "MCQ", important: true, options: ["Wajib bincang dahulu", "Boleh buat sendiri jika guna duit sendiri", "Bergantung kepada jumlah", "Bergantung kepada jenis pembelian"], prompt: "Bincangkan had perbelanjaan yang memerlukan persetujuan bersama." },
-            { id: "D06-002", cat: "Nafkah & Finance", text_ms: "Saya selesa pasangan mengetahui keadaan kewangan saya secara terbuka.", text_en: "I am comfortable with my partner knowing my financial status openly.", type: "SCALE", important: true, options: ["1 = Sangat tidak setuju", "2 = Tidak setuju", "3 = Neutral", "4 = Setuju", "5 = Sangat setuju"], prompt: "Sejauh mana ketelusan kewangan diamalkan sebelum dan selepas berkahwin?" },
-            { id: "D07-001", cat: "Family & Boundaries", text_ms: "Jika keluarga dan pasangan mempunyai pendapat berbeza, saya akan…", text_en: "If family and partner have differing opinions, I will...", type: "MCQ", important: true, options: ["Utamakan pasangan", "Cuba cari jalan tengah", "Dengar kedua-duanya dahulu", "Bergantung kepada isu"], prompt: "Bagaimana menetapkan sempadan sihat dengan keluarga kedua-belah pihak?" },
-            { id: "D09-001", cat: "Health & Housework", text_ms: "Pada pandangan awak, siapakah yang bertanggungjawab mengurus kerja rumah selepas berkahwin?", text_en: "Who is responsible for managing housework after marriage?", type: "MCQ", important: true, options: ["Isteri tanggungjawab utama, suami bantu", "Kedua-duanya berkongsi mengikut masa", "Mengikut status bekerja / suri rumah", "Dipersetujui bersama mengikut rutin"], prompt: "Bincangkan pembahagian tugas harian secara realistik." }
+            { id: "D01-001", cat: "D01 - Values & Personality", text_ms: "Apakah perkara yang paling penting dalam sebuah hubungan?", text_en: "What is most important in a relationship?", type: "MCQ", important: true, options: ["Trust & honesty", "Communication", "Stability", "Love & emotional connection"], prompt: "Mengapa dua perkara ini paling penting bagi anda? Bagaimanakah anda akan menunjukkannya dalam hubungan seharian?" },
+            { id: "D01-002", cat: "D01 - Values & Personality", text_ms: "Saya lebih selesa dengan pasangan yang...", text_en: "I am more comfortable with a partner who...", type: "MCQ", important: false, options: ["Sama seperti saya", "Mempunyai personaliti berbeza", "Seimbang dengan personaliti saya", "Tidak kisah asalkan saling memahami"], prompt: "Apakah maksud keserasian personaliti bagi anda?" },
+            { id: "D02-001", cat: "D02 - Emotional Support", text_ms: "Dalam hubungan, saya lebih menghargai…", text_en: "In a relationship, I value most…", type: "MCQ", important: false, options: ["Quality time", "Words of affirmation", "Acts of service", "Physical presence/support"], prompt: "Bincangkan bahasa kasih sayang (love languages) masing-masing." },
+            { id: "D03-001", cat: "D03 - Communication & Conflict", text_ms: "Bila membuat keputusan besar, saya biasanya...", text_en: "When making big decisions, I usually...", type: "MCQ", important: false, options: ["Fikir sendiri dahulu", "Terus bincang dengan pasangan", "Tanya orang berpengalaman", "Gabungkan semua pandangan"], prompt: "Bilakah keputusan perlu dibuat sendiri dan bilakah pasangan perlu dilibatkan?" },
+            { id: "D04-001", cat: "D04 - Money & Career", text_ms: "Dalam kehidupan, saya paling mengutamakan…", text_en: "In life, I prioritize most...", type: "MCQ", important: false, options: ["Family", "Career", "Financial stability", "Personal growth"], prompt: "Bagaimana kerjaya dan keluarga akan diimbangi?" },
+            { id: "D05-001", cat: "D05 - Expectations & Future", text_ms: "Bila plan masa depan tidak menjadi seperti yang dirancang...", text_en: "When future plans don't go as expected...", type: "MCQ", important: false, options: ["Cari plan baru bersama", "Tunggu keadaan berubah", "Seorang fokus dahulu, seorang support", "Bergantung kepada masalah"], prompt: "Bagaimanakah persediaan anda menghadapi cabaran tak dijangka?" },
+            { id: "D06-001", cat: "D06 - Nafkah & Finance", text_ms: "Saya selesa pasangan mengetahui keadaan kewangan saya secara terbuka.", text_en: "I am comfortable with my partner knowing my financial status openly.", type: "MCQ", important: true, options: ["Sangat Tidak Setuju", "Tidak Setuju", "Neutral", "Setuju", "Sangat Setuju"], prompt: "Sejauh mana ketelusan kewangan diamalkan sebelum dan selepas berkahwin?" },
+            { id: "D07-001", cat: "D07 - Family & Boundaries", text_ms: "Jika keluarga dan pasangan mempunyai pendapat berbeza, saya akan…", text_en: "If family and partner have differing opinions, I will...", type: "MCQ", important: true, options: ["Utamakan pasangan", "Cuba cari jalan tengah", "Dengar kedua-duanya dahulu", "Bergantung kepada isu"], prompt: "Bagaimana menetapkan sempadan sihat dengan keluarga kedua-belah pihak?" },
+            { id: "D08-001", cat: "D08 - Marriage & Daily Life", text_ms: "“Team” dalam sebuah perkahwinan adalah...", text_en: "A 'team' in marriage means...", type: "MCQ", important: false, options: ["Membahagikan tugas", "Saling membantu bila tidak mampu", "Membuat keputusan bersama", "Semua di atas + saling memahami"], prompt: "Apakah jangkaan anda terhadap kerjasama harian di rumah?" },
+            { id: "D09-001", cat: "D09 - Housework", text_ms: "Pada pandangan awak, siapakah yang bertanggungjawab mengurus kerja rumah selepas berkahwin?", text_en: "Who is responsible for managing housework after marriage?", type: "MCQ", important: true, options: ["Isteri tanggungjawab utama, suami bantu", "Kedua-duanya berkongsi mengikut masa", "Mengikut status bekerja / suri rumah", "Dipersetujui bersama mengikut rutin"], prompt: "Bincangkan pembahagian tugas harian secara realistik." },
+            { id: "D10-001", cat: "D10 - Children & Religious Education", text_ms: "Tentang anak pada masa depan...", text_en: "Regarding children in the future...", type: "MCQ", important: true, options: ["Memang mahu anak", "Belum pasti", "Tidak mahu anak", "Mahu bincang kemudian"], prompt: "Bincangkan perancangan keluarga dan pendidikan anak-anak." }
         ];
 
         const avatars = ['🦊', '🐼', '🐨', '🦁', '🐰', '🐯', '🐱', '🐶'];
         let state = {
             lang: 'ms',
             view: 'welcome',
+            mode: 'create', // 'create' or 'join'
             userName: '',
-            partnerName: '',
+            gender: 'male',
             userAvatar: '🦊',
             sessionCode: '',
             currentQIndex: 0,
-            answers: {},
-            partnerAnswers: {
-                'D01-001': 0, 'D01-002': 1, 'D02-001': 0, 'D03-001': 1, 'D03-003': 2,
-                'D04-001': 2, 'D04-002': 0, 'D06-002': 4, 'D07-001': 2, 'D09-001': 1
-            }
+            userAnswers: {},
+            partnerAnswers: null,
+            partnerName: 'Pasangan Anda'
         };
 
         const app = {
@@ -155,7 +157,6 @@
                 else if (state.view === 'setup') container.innerHTML = this.renderSetup();
                 else if (state.view === 'quiz') container.innerHTML = this.renderQuiz();
                 else if (state.view === 'results') container.innerHTML = this.renderResults();
-                else if (state.view === 'admin') container.innerHTML = this.renderAdmin();
                 if (window.lucide) lucide.createIcons();
             },
 
@@ -168,18 +169,32 @@
                         </div>
                         <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900">${lang.welcomeTitle}</h1>
                         <p class="text-slate-600 max-w-xl mx-auto text-base leading-relaxed">${lang.welcomeDesc}</p>
+                        
                         <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 max-w-md mx-auto text-xs text-rose-700 flex items-center justify-center space-x-2">
                             <i data-lucide="clock" class="w-4 h-4"></i>
                             <span>${lang.estimatedTime}</span>
                         </div>
+
                         <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
-                            <button onclick="app.router('setup')" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:from-rose-700 hover:to-pink-700 transition flex items-center justify-center space-x-2">
-                                <span>${lang.startBtn}</span>
-                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            <button onclick="app.startSetup('create')" class="px-6 py-3.5 bg-rose-600 text-white font-semibold rounded-xl shadow-lg hover:bg-rose-700 transition flex items-center justify-center space-x-2">
+                                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                                <span>${lang.createSessionBtn}</span>
+                            </button>
+                            <button onclick="app.startSetup('join')" class="px-6 py-3.5 bg-slate-800 text-white font-semibold rounded-xl shadow-lg hover:bg-slate-900 transition flex items-center justify-center space-x-2">
+                                <i data-lucide="link" class="w-5 h-5"></i>
+                                <span>${lang.joinSessionBtn}</span>
                             </button>
                         </div>
                     </div>
                 `;
+            },
+
+            startSetup(mode) {
+                state.mode = mode;
+                if (mode === 'create') {
+                    state.sessionCode = 'KS-' + Math.floor(1000 + Math.random() * 9000);
+                }
+                this.router('setup');
             },
 
             renderSetup() {
@@ -187,32 +202,51 @@
                 return `
                     <div class="p-6 sm:p-10 space-y-6">
                         <div class="border-b pb-4">
-                            <h2 class="text-2xl font-bold text-slate-900">Setup Session</h2>
-                            <p class="text-sm text-slate-500">Masukkan nama dan pilih avatar sebelum bermula.</p>
+                            <h2 class="text-2xl font-bold text-slate-900">${state.mode === 'create' ? 'Buka Sesi Baharu' : 'Sertai Sesi Pasangan'}</h2>
+                            <p class="text-sm text-slate-500">Sila masukkan maklumat peribadi anda di bawah.</p>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.sessionNameLabel}</label>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Anda</label>
                                 <input type="text" id="inputUserName" value="${state.userName}" placeholder="Contoh: Adam" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none">
                             </div>
+
                             <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.partnerNameLabel}</label>
-                                <input type="text" id="inputPartnerName" value="${state.partnerName}" placeholder="Contoh: Hawa" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.genderLabel}</label>
+                                <select id="inputGender" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none bg-white">
+                                    <option value="male" ${state.gender === 'male' ? 'selected' : ''}>${lang.maleOption}</option>
+                                    <option value="female" ${state.gender === 'female' ? 'selected' : ''}>${lang.femaleOption}</option>
+                                </select>
+                            </div>
+
+                            ${state.mode === 'join' ? `
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">${lang.sessionCodeLabel}</label>
+                                    <input type="text" id="inputSessionCode" placeholder="${lang.sessionCodePlaceholder}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-rose-500 outline-none uppercase font-bold text-rose-600">
+                                </div>
+                            ` : `
+                                <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl">
+                                    <span class="text-xs text-rose-600 font-semibold uppercase block">Kod Sesi Anda (Kongsi dengan Pasangan):</span>
+                                    <span class="text-2xl font-extrabold text-rose-700">${state.sessionCode}</span>
+                                </div>
+                            `}
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-3">Pilih Avatar</label>
+                                <div class="flex flex-wrap gap-3">
+                                    ${avatars.map(av => `
+                                        <button onclick="app.setAvatar('${av}')" class="w-12 h-12 text-2xl rounded-2xl border-2 flex items-center justify-center transition ${state.userAvatar === av ? 'border-rose-600 bg-rose-50 scale-105 shadow-md' : 'border-slate-200 hover:bg-slate-50'}">
+                                            ${av}
+                                        </button>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-3">${lang.selectAvatar}</label>
-                            <div class="flex flex-wrap gap-3">
-                                ${avatars.map(av => `
-                                    <button onclick="app.setAvatar('${av}')" class="w-12 h-12 text-2xl rounded-2xl border-2 flex items-center justify-center transition ${state.userAvatar === av ? 'border-rose-600 bg-rose-50 scale-105 shadow-md' : 'border-slate-200 hover:bg-slate-50'}">
-                                        ${av}
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
+
                         <div class="pt-6 flex justify-between items-center border-t">
                             <button onclick="app.router('welcome')" class="text-slate-500 hover:text-slate-800 font-medium text-sm">Kembali</button>
-                            <button onclick="app.startQuiz()" class="px-8 py-3 bg-rose-600 text-white font-semibold rounded-xl shadow hover:bg-rose-700 transition">Mula Ujian</button>
+                            <button onclick="app.startQuiz()" class="px-8 py-3 bg-rose-600 text-white font-semibold rounded-xl shadow hover:bg-rose-700 transition">${lang.startBtn}</button>
                         </div>
                     </div>
                 `;
@@ -223,16 +257,35 @@
                 this.render();
             },
 
-            startQuiz() {
+            async startQuiz() {
                 const uName = document.getElementById('inputUserName').value.trim();
-                const pName = document.getElementById('inputPartnerName').value.trim();
-                if (!uName || !pName) {
-                    alert("Sila masukkan nama anda dan nama pasangan.");
+                if (!uName) {
+                    alert("Sila masukkan nama anda.");
                     return;
                 }
                 state.userName = uName;
-                state.partnerName = pName;
-                state.sessionCode = 'KS-' + Math.floor(1000 + Math.random() * 9000);
+                state.gender = document.getElementById('inputGender').value;
+
+                if (state.mode === 'join') {
+                    const code = document.getElementById('inputSessionCode').value.trim().toUpperCase();
+                    if (!code) {
+                        alert("Sila masukkan Kod Sesi Pasangan anda.");
+                        return;
+                    }
+                    state.sessionCode = code;
+
+                    // Semak & Tarik Data Pasangan Pertama dari Supabase
+                    if (sbClient) {
+                        const { data, error } = await sbClient.from('couple_sessions').select('*').eq('session_code', code).single();
+                        if (error || !data) {
+                            alert("Kod Sesi tidak dijumpai. Sila pastikan Pasangan Pertama telah membuka sesi terlebih dahulu.");
+                            return;
+                        }
+                        state.partnerAnswers = data.answers;
+                        state.partnerName = data.user_name || 'Pasangan Anda';
+                    }
+                }
+
                 state.currentQIndex = 0;
                 this.router('quiz');
             },
@@ -243,24 +296,24 @@
                 const total = MASTER_QUESTIONS.length;
                 const progress = ((state.currentQIndex + 1) / total) * 100;
                 const qText = state.lang === 'ms' ? q.text_ms : q.text_en;
-                const currentAnswer = state.answers[q.id];
+                const currentAnswer = state.userAnswers[q.id];
 
                 return `
                     <div class="p-6 sm:p-10 space-y-6">
                         <div class="flex justify-between items-center text-sm font-medium text-slate-500">
-                            <span>${state.userAvatar} ${state.userName} & ${state.partnerName}</span>
-                            <span>Sesi: <strong class="text-rose-600">${state.sessionCode}</strong></span>
+                            <span>${state.userAvatar} ${state.userName} (${state.gender === 'male' ? 'Lelaki' : 'Perempuan'})</span>
+                            <span>Kod Sesi: <strong class="text-rose-600">${state.sessionCode}</strong></span>
                         </div>
                         <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                             <div class="bg-rose-500 h-full transition-all duration-300" style="width: ${progress}%"></div>
                         </div>
                         <div class="flex justify-between text-xs text-slate-400">
-                            <span>${lang.question} ${state.currentQIndex + 1} daripada ${total}</span>
+                            <span>Soalan ${state.currentQIndex + 1} daripada ${total}</span>
                             <span>${q.cat}</span>
                         </div>
 
                         <div class="space-y-4 pt-2">
-                            ${q.important ? `<span class="inline-block px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">${lang.importantBadge}</span>` : ''}
+                            ${q.important ? `<span class="inline-block px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">Soalan Utama ⚠️</span>` : ''}
                             <h3 class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">${qText}</h3>
 
                             <div class="space-y-3 pt-3">
@@ -274,10 +327,10 @@
                         </div>
 
                         <div class="pt-6 flex justify-between items-center border-t">
-                            <button onclick="app.prevQuestion()" ${state.currentQIndex === 0 ? 'disabled class="opacity-50 cursor-not-allowed px-5 py-2.5 rounded-xl border text-slate-400"' : 'class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50"'}>${lang.prev}</button>
+                            <button onclick="app.prevQuestion()" ${state.currentQIndex === 0 ? 'disabled class="opacity-50 cursor-not-allowed px-5 py-2.5 rounded-xl border text-slate-400"' : 'class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50"'}>Sebelumnya</button>
                             ${state.currentQIndex < total - 1 ? 
-                                `<button onclick="app.nextQuestion()" class="px-6 py-2.5 bg-rose-600 text-white font-semibold rounded-xl hover:bg-rose-700 shadow">${lang.next}</button>` :
-                                `<button onclick="app.finishQuiz()" class="px-6 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 shadow">${lang.submit}</button>`
+                                `<button onclick="app.nextQuestion()" class="px-6 py-2.5 bg-rose-600 text-white font-semibold rounded-xl hover:bg-rose-700 shadow">Seterusnya</button>` :
+                                `<button onclick="app.finishQuiz()" class="px-6 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 shadow">Hantar Jawapan</button>`
                             }
                         </div>
                     </div>
@@ -285,10 +338,10 @@
             },
 
             saveAnswer(qId, idx) {
-                state.answers[qId] = idx;
+                state.userAnswers[qId] = idx;
             },
             nextQuestion() {
-                if (state.answers[MASTER_QUESTIONS[state.currentQIndex].id] === undefined) {
+                if (state.userAnswers[MASTER_QUESTIONS[state.currentQIndex].id] === undefined) {
                     alert("Sila pilih satu jawapan sebelum meneruskan.");
                     return;
                 }
@@ -301,7 +354,22 @@
                     this.render();
                 }
             },
-            finishQuiz() {
+            async finishQuiz() {
+                // Simpan Jawapan ke Supabase
+                if (sbClient) {
+                    if (state.mode === 'create') {
+                        await sbClient.from('couple_sessions').insert([{
+                            session_code: state.sessionCode,
+                            user_name: `${state.userName} (${state.gender === 'male' ? 'Lelaki' : 'Perempuan'})`,
+                            answers: state.userAnswers
+                        }]);
+                    } else if (state.mode === 'join') {
+                        await sbClient.from('couple_sessions').update({
+                            partner_name: `${state.userName} (${state.gender === 'male' ? 'Lelaki' : 'Perempuan'})`,
+                            partner_answers: state.userAnswers
+                        }).eq('session_code', state.sessionCode);
+                    }
+                }
                 this.router('results');
             },
 
@@ -311,17 +379,22 @@
                 let totalQ = MASTER_QUESTIONS.length;
                 let diffs = [];
 
+                // Padankan Jawapan dengan Pasangan (jika wujud)
                 MASTER_QUESTIONS.forEach(q => {
-                    const uAns = state.answers[q.id];
-                    const pAns = state.partnerAnswers[q.id] !== undefined ? state.partnerAnswers[q.id] : 0;
-                    if (uAns === pAns) {
-                        matches++;
-                    } else {
-                        diffs.push({ q, uAns, pAns });
+                    const uAns = state.userAnswers[q.id];
+                    const pAns = state.partnerAnswers ? state.partnerAnswers[q.id] : null;
+
+                    if (pAns !== null && pAns !== undefined) {
+                        if (uAns === pAns) {
+                            matches++;
+                        } else {
+                            diffs.push({ q, uAns, pAns });
+                        }
                     }
                 });
 
-                const score = Math.round((matches / totalQ) * 100);
+                const hasPartner = state.partnerAnswers !== null;
+                const score = hasPartner ? Math.round((matches / totalQ) * 100) : 100;
 
                 return `
                     <div class="p-6 sm:p-10 space-y-8">
@@ -329,33 +402,44 @@
                             <div class="inline-flex p-3 bg-emerald-100 text-emerald-600 rounded-full">
                                 <i data-lucide="award" class="w-10 h-10"></i>
                             </div>
-                            <h2 class="text-3xl font-bold text-slate-900">Keputusan Keserasian: ${state.userName} & ${state.partnerName}</h2>
+                            <h2 class="text-3xl font-bold text-slate-900">Keputusan Keserasian Pasangan</h2>
+                            <p class="text-slate-500">Kod Sesi: <strong class="text-rose-600">${state.sessionCode}</strong></p>
                         </div>
 
-                        <div class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 text-white text-center shadow-lg">
-                            <span class="text-xs uppercase tracking-widest font-semibold opacity-90">${lang.compatibilityScore}</span>
-                            <div class="text-6xl font-extrabold my-2">${score}%</div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                                <i data-lucide="sparkles" class="w-5 h-5 text-rose-600"></i>
-                                <span>${lang.discussionNeeded} (${diffs.length} topik)</span>
-                            </h3>
-                            <div class="space-y-3">
-                                ${diffs.map(d => `
-                                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
-                                        <div class="flex justify-between items-start">
-                                            <span class="text-xs font-bold text-rose-600 uppercase">${d.q.cat}</span>
-                                        </div>
-                                        <h4 class="font-semibold text-slate-900">${state.lang === 'ms' ? d.q.text_ms : d.q.text_en}</h4>
-                                        <p class="text-xs text-rose-700 bg-rose-50 p-2.5 rounded-lg border border-rose-100 mt-2">
-                                            💡 <strong>Cadangan Perbincangan:</strong> ${d.q.prompt}
-                                        </p>
-                                    </div>
-                                `).join('')}
+                        ${!hasPartner ? `
+                            <div class="p-6 bg-amber-50 border border-amber-200 rounded-2xl text-center space-y-2">
+                                <h3 class="text-lg font-bold text-amber-800">Jawapan Anda Telah Disimpan! 🎉</h3>
+                                <p class="text-sm text-amber-700">Minta pasangan anda memilih <strong>"Sertai Sesi Pasangan"</strong> dan masukkan Kod Sesi <strong class="text-rose-600 font-extrabold">${state.sessionCode}</strong> untuk membandingkan jawapan secara terus.</p>
                             </div>
-                        </div>
+                        ` : `
+                            <div class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 text-white text-center shadow-lg">
+                                <span class="text-xs uppercase tracking-widest font-semibold opacity-90">${lang.compatibilityScore}</span>
+                                <div class="text-6xl font-extrabold my-2">${score}%</div>
+                                <p class="text-sm opacity-90">${state.userName} &${state.partnerName}</p>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                                    <i data-lucide="sparkles" class="w-5 h-5 text-rose-600"></i>
+                                    <span>${lang.discussionNeeded} (${diffs.length} topik)</span>
+                                </h3>
+                                <div class="space-y-3">
+                                    ${diffs.map(d => `
+                                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                                            <span class="text-xs font-bold text-rose-600 uppercase">${d.q.cat}</span>
+                                            <h4 class="font-semibold text-slate-900">${state.lang === 'ms' ? d.q.text_ms : d.q.text_en}</h4>
+                                            <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                                                <div class="p-2 bg-white rounded border"><strong>${state.userName}:</strong> ${d.q.options[d.uAns]}</div>
+                                                <div class="p-2 bg-white rounded border"><strong>${state.partnerName}:</strong> ${d.q.options[d.pAns]}</div>
+                                            </div>
+                                            <p class="text-xs text-rose-700 bg-rose-50 p-2.5 rounded-lg border border-rose-100 mt-2">
+                                                💡 <strong>Cadangan Perbincangan:</strong> ${d.q.prompt}
+                                            </p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `}
 
                         <div class="pt-6 border-t flex justify-between items-center no-print">
                             <button onclick="window.print()" class="px-6 py-3 bg-slate-800 text-white font-semibold rounded-xl hover:bg-slate-900 transition flex items-center space-x-2">
@@ -368,7 +452,6 @@
             }
         };
 
-        // Jalankan Laman Web
         window.addEventListener('DOMContentLoaded', () => {
             app.render();
         });
